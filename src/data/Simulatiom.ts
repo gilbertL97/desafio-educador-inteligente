@@ -1,4 +1,5 @@
 import type { FormStepProps } from "@/components/features/Simulation/FormStep";
+import type { InsightData } from "@/service/aiService";
 import { CalendarClock, CreditCard, Goal, Landmark, PiggyBank, Wallet } from "lucide-react";
 
 export const simulationFormSteps = [
@@ -84,5 +85,5 @@ export type SimulationFormData = Record<
 >
 export type SimulationRecord = SimulationFormData & {
     id: string
-    insight?: string
+    insight?: InsightData
 }

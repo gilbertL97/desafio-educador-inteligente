@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { buildAIPrompt } from '@/data/aiPrompt';
 import type { SimulationRecord } from '@/data/Simulatiom';
-import type { InsightData } from '@/service/aiService';
+import { getInsight, type InsightData } from '@/service/aiService';
 
 import { useSimulationStorage } from './useSimulationStorage';
 
@@ -14,7 +14,7 @@ export const useInsight = (id: string) => {
     const simulation = getFormData(id);
 
     if (simulation?.insight) {
-      return simulation.insight;
+      return simulation.insight as InsightData;
     }
 
     return null;
