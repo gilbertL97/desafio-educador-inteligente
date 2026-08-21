@@ -1,15 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { buildAIPrompt } from '@/data/aiPrompt';
-import { getInsight, type InsightData } from '@/service/aiService';
+import type { SimulationRecord } from '@/data/Simulatiom';
+import type { InsightData } from '@/service/aiService';
 
 import { useSimulationStorage } from './useSimulationStorage';
 
 export const useInsight = (id: string) => {
   const isRequestPending = useRef(false);
-  const { getFormData } = useSimulationStorage();
+  const { getFormData, updateSimulation } = useSimulationStorage();
 
-  const [insight, setInsight] = useState<InsightData | null>(null);
+  const [insight, setInsight] = useState<InsightData | null>(() => {
+    const simulation = getFormData(id);
+
+    if (simulation?.insight) {
+      return simulation.insight;
+    }
+
+    return null;
+  });
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +42,11 @@ export const useInsight = (id: string) => {
         const prompt = buildAIPrompt(simulation);
         const data = await getInsight(prompt);
         setInsight(data);
+
+        updateSimulation(simulationId, {
+          ...simulation,
+          insight: data,
+        } as SimulationRecord);
       } catch {
         setError('Erro ao gerar o diagnóstico. Tente novamente.');
       } finally {
@@ -40,7 +54,7 @@ export const useInsight = (id: string) => {
         setIsLoading(false);
       }
     },
-    [getFormData],
+    [getFormData, updateSimulation],
   );
 
   useEffect(() => {
