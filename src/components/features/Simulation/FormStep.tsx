@@ -19,7 +19,7 @@ export interface FormStepProps {
 }
 interface ActionButtonProps {
   onBack: () => void;
-  onNext: () => void;
+  onNext: (value: string) => void;
   hiddeBackButton?: boolean;
 }
 export function FormStep({
@@ -39,7 +39,7 @@ export function FormStep({
     if (!inputValue) {
       return;
     }
-    onNext();
+    onNext(inputValue);
   };
   return (
     <div className="bg-card rounded-2xl p-6 shadow-[4px_4px_18px_0px_rgba(0,0,0,0.2)] sm:p-8">

@@ -1,3 +1,4 @@
+import type { FormStepProps } from "@/components/features/Simulation/FormStep";
 import { CalendarClock, CreditCard, Goal, Landmark, PiggyBank, Wallet } from "lucide-react";
 
 export const simulationFormSteps = [
@@ -75,4 +76,9 @@ export const simulationFormSteps = [
             emojiIcon: '✨',
         },
     },
-] 
+] satisfies FormStepProps[]
+
+export type SimulationFormData = Record<
+    (typeof simulationFormSteps)[number]['id'],
+    string
+>
