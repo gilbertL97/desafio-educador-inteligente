@@ -21,8 +21,8 @@ export function SimulationForm() {
     setFormData(updatedFormData);
 
     if (currentStepIndex + 1 > totalSteps - 1) {
-      saveFormData(updatedFormData);
-      navigate('/resultado');
+      const id = saveFormData(updatedFormData);
+      navigate(`/resultado/${id}`);
       return;
     }
     setCurrentStepIndex((prev) => prev + 1);
