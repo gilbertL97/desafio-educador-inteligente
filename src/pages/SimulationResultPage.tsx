@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { AIInsightsCard } from '@/components/features/simulationResults/AIInsightCardProps';
 import { Card } from '@/components/features/simulationResults/Card';
 import { PageHero } from '@/components/shared/PageHero';
-import { useSimulationStorage } from '@/hook/useSimulationStorage';
+import { useSimulationStorage } from '@/hooks/useSimulationStorage';
 import { calcMonthlySavings } from '@/utils/simulation';
 
 export function SimulationResultsPage() {
