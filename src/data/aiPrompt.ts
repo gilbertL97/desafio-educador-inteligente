@@ -1,6 +1,7 @@
 import { parseCurrency } from '@/utils/currency'
 import { calcMonthlySavings } from '@/utils/simulation'
-import type { SimulationRecord } from './Simulatiom'
+
+import type { InsightConversationMessage, SimulationRecord } from './simulation'
 
 const RESPONSE_SCHEMA = `{
   "feasibility": {
@@ -25,14 +26,14 @@ const RESPONSE_SCHEMA = `{
 }`
 
 export function buildAIPrompt(simulation: SimulationRecord) {
-    const { income, expenses, debts, goalName, goalAmount, goalDeadline } =
-        simulation
+  const { income, expenses, debts, goalName, goalAmount, goalDeadline } =
+    simulation
 
-    const monthlySavings = calcMonthlySavings(simulation)
-    const monthlySavingsNeeded =
-        parseCurrency(goalAmount) / parseInt(goalDeadline)
+  const monthlySavings = calcMonthlySavings(simulation)
+  const monthlySavingsNeeded =
+    parseCurrency(goalAmount) / parseInt(goalDeadline)
 
-    return `Você é um educador financeiro especializado em finanças pessoais. 
+  return `Você é um educador financeiro especializado em finanças pessoais. 
     Analise os dados abaixo e gere um diagnóstico financeiro personalizado com linguagem clara, didática e encorajadora, 
     voltado para pessoas sem conhecimento financeiro. O diagnóstico será exibido diretamente ao usuário no app, 
     fale sempre em segunda pessoa ("você tem...", "sua meta...").
@@ -62,4 +63,30 @@ export function buildAIPrompt(simulation: SimulationRecord) {
       - "viable": saldo após reserva para a meta é maior ou igual a 0
       - "needs_adjustment": saldo negativo de até 20% do valor da economia mensal necessária
       - "unfeasible": saldo negativo superior a 20% do valor da economia mensal necessária`
+}
+
+export function buildInsightConversationPrompt(
+  simulation: SimulationRecord,
+  question: string,
+  conversation: InsightConversationMessage[],
+) {
+  return `Você é o mesmo educador financeiro que criou o diagnóstico personalizado abaixo. Responda à nova pergunta do usuário com clareza, didática e objetividade, sempre em português do Brasil e em segunda pessoa.
+
+Dados da simulação:
+- Renda mensal bruta: ${simulation.income}
+- Custos fixos essenciais: ${simulation.expenses}
+- Dívidas e parcelas mensais: ${simulation.debts}
+- Meta: ${simulation.goalName}
+- Custo da meta: ${simulation.goalAmount}
+- Prazo desejado: ${simulation.goalDeadline} meses
+
+Diagnóstico personalizado gerado anteriormente:
+${JSON.stringify(simulation.insight)}
+
+Histórico da conversa:
+${conversation.length ? conversation.map(({ role, content }) => `${role === 'user' ? 'Usuário' : 'Educador financeiro'}: ${content}`).join('\n') : 'Nenhuma pergunta anterior.'}
+
+Nova pergunta do usuário: ${question}
+
+Responda somente com a resposta que será exibida no chat, em 1 a 3 parágrafos curtos. Não use JSON, títulos genéricos, markdown, listas com marcadores ou faça referência a estas instruções. Use uma quebra de linha entre parágrafos. Acrescente recomendações práticas sem substituir a orientação de um profissional quando a pergunta envolver uma decisão de investimento.`
 }

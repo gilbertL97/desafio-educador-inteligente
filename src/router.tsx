@@ -1,9 +1,9 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter } from 'react-router-dom'
 
-import { RootLayout } from '@/components/layout/RootLayout';
-import { SimulationFormPages } from '@/pages/SimulationFormPages';
-
-import { SimulationResultsPage } from './pages/SimulationResultPage';
+import { RootLayout } from './components/layout/RootLayout'
+import { SimulationFormPage } from './pages/SimulationFormPage'
+import { SimulationHistoryPage } from './pages/SimulationHistoryPage'
+import { SimulationResultsPage } from './pages/SimulationResultsPage'
 
 export const router = createBrowserRouter([
   {
@@ -11,7 +11,7 @@ export const router = createBrowserRouter([
     children: [
       {
         path: '/',
-        element: <SimulationFormPages />,
+        element: <SimulationFormPage />,
       },
       {
         path: '/resultado/:id',
@@ -19,8 +19,8 @@ export const router = createBrowserRouter([
       },
       {
         path: '/historico',
-        element: <h1>Histórico de Simulações</h1>,
+        element: <SimulationHistoryPage />,
       },
     ],
   },
-]);
+])

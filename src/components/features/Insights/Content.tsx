@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-import type { InsightData } from '@/service/aiService'
+import type { InsightData } from '@/services/aiService'
 
 interface ContentProps {
   insight: InsightData
@@ -11,8 +11,7 @@ function Paragraph({ children }: PropsWithChildren) {
     <p className="text-muted-foreground text-sm leading-relaxed">{children}</p>
   )
 }
-
-function SectionTitle({ children }: PropsWithChildren) {
+export function SectionTitle({ children }: PropsWithChildren) {
   return (
     <h3 className="text-foreground mt-5 mb-1.5 text-sm leading-relaxed font-semibold">
       {children}
@@ -53,7 +52,7 @@ export function Content({ insight }: ContentProps) {
   const status = statusStyles[insight.feasibility.status] ?? null
 
   return (
-    <div className="lg:scrollbar-thin lg:max-h-93 lg:overflow-y-auto lg:pr-2 lg:[scrollbar-color:var(--border)_transparent]">
+    <div>
       <section className="flex flex-col gap-2">
         <div className="flex flex-col items-start gap-2 sm:flex-row">
           <span className="text-foreground text-sm font-semibold">
