@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { HistoryCard } from '@/components/features/simulationHistory/HistoryCard'
 import { Button } from '@/components/shared/Button'
+import { ConfirmModal } from '@/components/shared/ConfirmModal'
 import { PageHero } from '@/components/shared/PageHero'
 import type { SimulationRecord } from '@/data/simulation'
 import { useSimulationStorage } from '@/hooks/useSimulationStorage'
@@ -16,23 +17,22 @@ export function SimulationHistoryPage() {
     getAllSimulations(),
   )
 
-  const handleDelete = (id: string) => {
-    const simulation = simulations.find((record) => record.id === id)
+  const [pendingDelete, setPendingDelete] = useState<SimulationRecord | null>(
+    null,
+  )
 
-    if (!simulation) {
+  const handleConfirmDelete = () => {
+    if (!pendingDelete) {
       return
     }
 
-    const confirmed = window.confirm(
-      `Excluir a simulação "${simulation.goalName}" do histórico?`,
-    )
-
-    if (!confirmed) {
-      return
-    }
-
-    deleteSimulation(id)
+    deleteSimulation(pendingDelete.id)
     setSimulations(getAllSimulations())
+    setPendingDelete(null)
+  }
+
+  const handleDelete = (id: string) => {
+    setPendingDelete(simulations.find((record) => record.id === id) ?? null)
   }
 
   return (
@@ -87,6 +87,20 @@ export function SimulationHistoryPage() {
           </Button>
         </div>
       )}
+
+      <ConfirmModal
+        open={pendingDelete !== null}
+        title="Excluir simulação"
+        description={
+          pendingDelete
+            ? `Tem certeza que deseja excluir "${pendingDelete.goalName}" do histórico? Essa ação não pode ser desfeita.`
+            : ''
+        }
+        confirmLabel="Excluir"
+        cancelLabel="Cancelar"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </main>
   )
 }
