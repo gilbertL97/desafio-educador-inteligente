@@ -5,13 +5,30 @@ import {
 
 const LOCAL_STORAGE_KEY = 'simulation-data'
 
+const readSimulations = (): SimulationRecord[] => {
+  const storage = localStorage.getItem(LOCAL_STORAGE_KEY)
+
+  if (!storage) {
+    return []
+  }
+
+  try {
+    return JSON.parse(storage) as SimulationRecord[]
+  } catch {
+    return []
+  }
+}
+
 export const useSimulationStorage = () => {
   const saveFormData = (formData: SimulationFormData) => {
     const id = crypto.randomUUID()
-    const record: SimulationRecord = { ...formData, id }
+    const record: SimulationRecord = {
+      ...formData,
+      id,
+      createdAt: new Date().toISOString(),
+    }
 
-    const storage = localStorage.getItem(LOCAL_STORAGE_KEY)
-    const savedData = storage ? (JSON.parse(storage) as SimulationRecord[]) : []
+    const savedData = readSimulations()
 
     localStorage.setItem(
       LOCAL_STORAGE_KEY,
@@ -21,20 +38,16 @@ export const useSimulationStorage = () => {
     return id
   }
 
+  const getAllSimulations = (): SimulationRecord[] =>
+    [...readSimulations()].reverse()
+
   const getFormData = (id: string) => {
-    const storage = localStorage.getItem(LOCAL_STORAGE_KEY)
-
-    if (!storage) {
-      return null
-    }
-
-    const savedData = JSON.parse(storage) as SimulationRecord[]
+    const savedData = readSimulations()
     return savedData.find((record) => record.id === id) || null
   }
 
   const updateSimulation = (id: string, data: SimulationRecord) => {
-    const storage = localStorage.getItem(LOCAL_STORAGE_KEY)
-    const savedData = storage ? (JSON.parse(storage) as SimulationRecord[]) : []
+    const savedData = readSimulations()
 
     const updated = savedData.map((record) =>
       record.id === id ? { ...data } : record,
@@ -43,5 +56,18 @@ export const useSimulationStorage = () => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated))
   }
 
-  return { saveFormData, getFormData, updateSimulation }
+  const deleteSimulation = (id: string) => {
+    const savedData = readSimulations()
+    const updated = savedData.filter((record) => record.id !== id)
+
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(updated))
+  }
+
+  return {
+    saveFormData,
+    getAllSimulations,
+    getFormData,
+    updateSimulation,
+    deleteSimulation,
+  }
 }
