@@ -1,6 +1,7 @@
 import { parseCurrency } from '@/utils/currency'
 import { calcMonthlySavings } from '@/utils/simulation'
-import type { SimulationRecord } from './Simulatiom'
+
+import type { SimulationRecord } from './simulation'
 
 const RESPONSE_SCHEMA = `{
   "feasibility": {
@@ -25,14 +26,14 @@ const RESPONSE_SCHEMA = `{
 }`
 
 export function buildAIPrompt(simulation: SimulationRecord) {
-    const { income, expenses, debts, goalName, goalAmount, goalDeadline } =
-        simulation
+  const { income, expenses, debts, goalName, goalAmount, goalDeadline } =
+    simulation
 
-    const monthlySavings = calcMonthlySavings(simulation)
-    const monthlySavingsNeeded =
-        parseCurrency(goalAmount) / parseInt(goalDeadline)
+  const monthlySavings = calcMonthlySavings(simulation)
+  const monthlySavingsNeeded =
+    parseCurrency(goalAmount) / parseInt(goalDeadline)
 
-    return `Você é um educador financeiro especializado em finanças pessoais. 
+  return `Você é um educador financeiro especializado em finanças pessoais. 
     Analise os dados abaixo e gere um diagnóstico financeiro personalizado com linguagem clara, didática e encorajadora, 
     voltado para pessoas sem conhecimento financeiro. O diagnóstico será exibido diretamente ao usuário no app, 
     fale sempre em segunda pessoa ("você tem...", "sua meta...").
